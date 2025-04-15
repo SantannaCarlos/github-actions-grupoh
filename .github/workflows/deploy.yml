@@ -18,15 +18,21 @@ jobs:
           git config --global user.name "SantannaCarlos"
           git config --global user.email "chsantanna05@gmail.com"
 
-      - name: Criar branch gh-pages e fazer o deploy
+      - name: Criar branch gh-pages se não existir
         run: |
           git fetch origin
-          git checkout -b gh-pages origin/gh-pages || git checkout --orphan gh-pages
-          git rm -rf .
-          cp -r * .
+          git checkout --orphan gh-pages || git checkout gh-pages
+          git rm -rf . || true
+
+      - name: Copiar os arquivos para a branch gh-pages
+        run: |
+          cp -r * . || true
           echo > .nojekyll
+
+      - name: Fazer commit e deploy para a branch gh-pages
+        run: |
           git add .
-          git commit -m "Deploy manual para GitHub Pages"
+          git commit -m "Deploy manual para GitHub Pages" || echo "Nada para commitar"
           git push --force origin gh-pages
 
       - name: Limpeza
