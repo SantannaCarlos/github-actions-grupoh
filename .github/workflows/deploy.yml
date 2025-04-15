@@ -5,27 +5,31 @@ on:
     branches:
       - main
 
-permissions:
-  pages: write
-  id-token: write
-
 jobs:
   deploy:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout do repositório
-        uses: actions/checkout@v3
-        with:
-          ref: main
+      - name: Fazer checkout do código
+        uses: actions/checkout@v2
 
-      - name: Configurar GitHub Pages
-        uses: actions/configure-pages@v3
+      - name: Configurar Git
+        run: |
+          git config --global user.name "github-actions"
+          git config --global user.email "github-actions@github.com"
 
-      - name: Fazer upload do conteúdo
-        uses: actions/upload-pages-artifact@v3
-        with:
-          path: '.'
+      - name: Criar a branch gh-pages (se não existir)
+        run: |
+          git fetch origin gh-pages || git checkout --orphan gh-pages
+          git reset --hard origin/gh-pages
 
-      - name: Executar deploy
-        uses: actions/deploy-pages@v3
+      - name: Copiar arquivos para a branch gh-pages
+        run: |
+          git rm -rf .
+          cp -R * .
+
+      - name: Commit e push para gh-pages
+        run: |
+          git add .
+          git commit -m "Deploy para GitHub Pages"
+          git push origin gh-pages --force
