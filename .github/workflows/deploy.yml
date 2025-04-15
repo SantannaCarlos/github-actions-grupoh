@@ -22,10 +22,9 @@ jobs:
         run: |
           git clone --depth=1 --branch=gh-pages https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }} gh-pages
 
-      - name: Copiar arquivos da main para a gh-pages
+      - name: Copiar arquivos da main para a gh-pages (ignorando a pasta gh-pages)
         run: |
-          rm -rf gh-pages/*
-          cp -r * gh-pages
+          rsync -av --exclude='gh-pages' ./ gh-pages/
           touch gh-pages/.nojekyll
 
       - name: Fazer commit e push para gh-pages
