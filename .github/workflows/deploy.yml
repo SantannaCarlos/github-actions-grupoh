@@ -23,7 +23,7 @@ jobs:
       - name: Fazer upload do conteúdo
         uses: actions/upload-pages-artifact@v3
         with:
-          path: .
+          path: './'
 
       - name: Executar deploy
         uses: actions/deploy-pages@v2
