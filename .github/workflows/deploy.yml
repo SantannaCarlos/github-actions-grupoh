@@ -10,26 +10,12 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Fazer checkout do código
-        uses: actions/checkout@v2
+    - name: Checkout do código
+      uses: actions/checkout@v3
 
-      - name: Configurar Git
-        run: |
-          git config --global user.name "github-actions"
-          git config --global user.email "github-actions@github.com"
-
-      - name: Criar a branch gh-pages (se não existir)
-        run: |
-          git fetch origin gh-pages || git checkout --orphan gh-pages
-          git reset --hard origin/gh-pages
-
-      - name: Copiar arquivos para a branch gh-pages
-        run: |
-          git rm -rf .
-          cp -R * .
-
-      - name: Commit e push para gh-pages
-        run: |
-          git add .
-          git commit -m "Deploy para GitHub Pages"
-          git push origin gh-pages --force
+    - name: Deploy para o GitHub Pages
+      uses: peaceiris/actions-gh-pages@v3
+      with:
+        github_token: ${{ secrets.GITHUB_TOKEN }}
+        publish_branch: gh-pages
+        publish_dir: .
