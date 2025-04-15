@@ -10,31 +10,27 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Baixar o código do repositório
+      - name: Checkout da branch main
         uses: actions/checkout@v3
 
-      - name: Configurar o Git
+      - name: Configurar Git
         run: |
           git config --global user.name "SantannaCarlos"
           git config --global user.email "chsantanna05@gmail.com"
 
-      - name: Criar branch gh-pages se não existir
+      - name: Clonar branch gh-pages em pasta separada
         run: |
-          git fetch origin
-          git checkout --orphan gh-pages || git checkout gh-pages
-          git rm -rf . || true
+          git clone --depth=1 --branch=gh-pages https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }} gh-pages
 
-      - name: Copiar os arquivos para a branch gh-pages
+      - name: Copiar arquivos da main para a gh-pages
         run: |
-          cp -r * . || true
-          echo > .nojekyll
+          rm -rf gh-pages/*
+          cp -r * gh-pages
+          touch gh-pages/.nojekyll
 
-      - name: Fazer commit e deploy para a branch gh-pages
+      - name: Fazer commit e push para gh-pages
         run: |
+          cd gh-pages
           git add .
-          git commit -m "Deploy manual para GitHub Pages" || echo "Nada para commitar"
-          git push --force origin gh-pages
-
-      - name: Limpeza
-        run: |
-          echo "Deploy concluído"
+          git commit -m "Deploy automático para GitHub Pages" || echo "Nada novo para commitar"
+          git push origin gh-pages
