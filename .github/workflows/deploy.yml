@@ -5,27 +5,25 @@ on:
     branches:
       - main
 
+permissions:
+  pages: write
+  id-token: write
+
 jobs:
   deploy:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout do código
+      - name: Checkout do repositório
         uses: actions/checkout@v3
 
-      - name: Configurar Git
-        run: |
-          git config --global user.name "SantannaCarlos"
-          git config --global user.email "chsantanna05@gmail.com"
+      - name: Configurar GitHub Pages
+        uses: actions/configure-pages@v3
 
-      - name: Criar diretório temporário e copiar arquivos
-        run: |
-          mkdir temp-deploy
-          cp -r * temp-deploy
-          cd temp-deploy
-          git init
-          git remote add origin https://github.com/SantannaCarlos/github-actions-grupoh.git
-          git checkout -b gh-pages
-          git add .
-          git commit -m "Deploy para GitHub Pages"
-          git push --force origin gh-pages
+      - name: Fazer upload do conteúdo
+        uses: actions/upload-pages-artifact@v2
+        with:
+          path: .
+
+      - name: Executar deploy
+        uses: actions/deploy-pages@v2
