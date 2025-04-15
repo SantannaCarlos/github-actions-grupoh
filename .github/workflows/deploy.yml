@@ -1,0 +1,34 @@
+name: Deploy para GitHub Pages
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  publicar:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Baixar o código do repositório
+        uses: actions/checkout@v3
+
+      - name: Configurar o Git
+        run: |
+          git config --global user.name "SantannaCarlos"
+          git config --global user.email "chsantanna05@gmail.com"
+
+      - name: Criar branch gh-pages e fazer o deploy
+        run: |
+          git fetch origin
+          git checkout -b gh-pages origin/gh-pages || git checkout --orphan gh-pages
+          git rm -rf .
+          cp -r * .
+          echo > .nojekyll
+          git add .
+          git commit -m "Deploy manual para GitHub Pages"
+          git push --force origin gh-pages
+
+      - name: Limpeza
+        run: |
+          echo "Deploy concluído"
