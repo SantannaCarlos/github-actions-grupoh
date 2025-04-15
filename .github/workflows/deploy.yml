@@ -20,19 +20,13 @@ jobs:
 
     - name: Criar ou atualizar branch gh-pages
       run: |
-        git checkout main
         git checkout -B gh-pages
-        git reset --hard
+        git reset --hard origin/main
         git clean -fd
-
-    - name: Gerar arquivos estáticos
-      run: |
-        # Substitua este comando pelo comando real para gerar os arquivos estáticos
-        echo "Gerando arquivos estáticos..." > index.html
 
     - name: Adicionar arquivos e fazer commit
       run: |
-        git add .
+        git add index.html
         git commit -m "Deploy para GitHub Pages" || echo "Nada para commitar"
 
     - name: Enviar para a branch gh-pages
