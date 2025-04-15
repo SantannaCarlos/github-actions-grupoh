@@ -6,11 +6,11 @@ on:
       - main
 
 jobs:
-  publicar:
+  deploy:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout da branch main
+      - name: Checkout do código
         uses: actions/checkout@v3
 
       - name: Configurar Git
@@ -18,18 +18,14 @@ jobs:
           git config --global user.name "SantannaCarlos"
           git config --global user.email "chsantanna05@gmail.com"
 
-      - name: Clonar branch gh-pages em pasta separada
+      - name: Criar diretório temporário e copiar arquivos
         run: |
-          git clone --depth=1 --branch=gh-pages https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }} gh-pages
-
-      - name: Copiar arquivos da main para a gh-pages (ignorando a pasta gh-pages)
-        run: |
-          rsync -av --exclude='gh-pages' ./ gh-pages/
-          touch gh-pages/.nojekyll
-
-      - name: Fazer commit e push para gh-pages
-        run: |
-          cd gh-pages
+          mkdir temp-deploy
+          cp -r * temp-deploy
+          cd temp-deploy
+          git init
+          git remote add origin https://github.com/SantannaCarlos/github-actions-grupoh.git
+          git checkout -b gh-pages
           git add .
-          git commit -m "Deploy automático para GitHub Pages" || echo "Nada novo para commitar"
-          git push origin gh-pages
+          git commit -m "Deploy para GitHub Pages"
+          git push --force origin gh-pages
